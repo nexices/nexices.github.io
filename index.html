@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keziah</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 5rem;
+            background: linear-gradient(45deg, #00f5ff, #ff00ff, #00ff88);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            letter-spacing: 8px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #00f5ff;
+            margin-top: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00f5ff, 0 0 10px #00f5ff; }
+            to { text-shadow: 0 0 10px #00f5ff, 0 0 20px #00f5ff, 0 0 30px #00f5ff; }
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .tech-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #00f5ff;
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.4);
+        }
+
+        .tech-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-name {
+            font-size: 1.2rem;
+            color: #00f5ff;
+            font-weight: bold;
+        }
+
+        .game-section {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #ff00ff;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .game-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            background: #000;
+            border: 2px solid #00f5ff;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        .game-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: #00ff88;
+            font-size: 1.2rem;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    
+    <div class="content">
+        <header>
+            <h1>KEZIAH</h1>
+            <p class="subtitle">&lt; Développeur / Créatif &gt;</p>
+        </header>
+
+        <div class="tech-grid">
+            <div class="tech-card">
+                <div class="tech-icon">💻</div>
+                <div class="tech-name">JavaScript</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">⚛️</div>
+                <div class="tech-name">React</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">🎨</div>
+                <div class="tech-name">CSS3</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">🚀</div>
+                <div class="tech-name">Node.js</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">🎮</div>
+                <div class="tech-name">Canvas</div>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">⚡</div>
+                <div class="tech-name">WebGL</div>
+            </div>
+        </div>
+
+        <div class="game-section">
+            <h2 class="game-title">[ CASSE-BRIQUE NEON ]</h2>
+            <canvas id="gameCanvas" class="game-canvas"></canvas>
+            <div class="game-info">
+                <p>Score: <span class="score" id="score">0</span></p>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Cliquez pour commencer • Utilisez la souris pour déplacer la raquette</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particles Background
+        const particlesCanvas = document.getElementById('particles');
+        const pCtx = particlesCanvas.getContext('2d');
+        particlesCanvas.width = window.innerWidth;
+        particlesCanvas.height = window.innerHeight;
+
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: Math.random() * particlesCanvas.width,
+                y: Math.random() * particlesCanvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2
+            });
+        }
+
+        function animateParticles() {
+            pCtx.fillStyle = 'rgba(10, 14, 39, 0.1)';
+            pCtx.fillRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+                
+                pCtx.fillStyle = 'rgba(0, 245, 255, 0.6)';
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                pCtx.fill();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            particlesCanvas.width = window.innerWidth;
+            particlesCanvas.height = window.innerHeight;
+        });
+
+        // Breakout Game
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 400;
+
+        let score = 0;
+        let gameStarted = false;
+
+        const paddle = {
+            x: canvas.width / 2 - 50,
+            y: canvas.height - 30,
+            width: 100,
+            height: 10,
+            speed: 8
+        };
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 8,
+            dx: 3,
+            dy: -3
+        };
+
+        const bricks = [];
+        const brickRows = 5;
+        const brickCols = 8;
+        const brickWidth = 70;
+        const brickHeight = 20;
+        const brickPadding = 5;
+        const brickOffsetTop = 40;
+        const brickOffsetLeft = 10;
+
+        const colors = ['#ff00ff', '#00f5ff', '#00ff88', '#ffff00', '#ff0080'];
+
+        for (let row = 0; row < brickRows; row++) {
+            bricks[row] = [];
+            for (let col = 0; col < brickCols; col++) {
+                bricks[row][col] = { x: 0, y: 0, status: 1 };
+            }
+        }
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            paddle.x = mouseX - paddle.width / 2;
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+        });
+
+        canvas.addEventListener('click', () => {
+            if (!gameStarted) gameStarted = true;
+        });
+
+        function drawBricks() {
+            for (let row = 0; row < brickRows; row++) {
+                for (let col = 0; col < brickCols; col++) {
+                    if (bricks[row][col].status === 1) {
+                        const brickX = col * (brickWidth + brickPadding) + brickOffsetLeft;
+                        const brickY = row * (brickHeight + brickPadding) + brickOffsetTop;
+                        bricks[row][col].x = brickX;
+                        bricks[row][col].y = brickY;
+                        
+                        ctx.fillStyle = colors[row];
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = colors[row];
+                        ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#00f5ff';
+            ctx.fill();
+            ctx.closePath();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawPaddle() {
+            ctx.fillStyle = '#00ff88';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#00ff88';
+            ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+            ctx.shadowBlur = 0;
+        }
+
+        function collisionDetection() {
+            for (let row = 0; row < brickRows; row++) {
+                for (let col = 0; col < brickCols; col++) {
+                    const brick = bricks[row][col];
+                    if (brick.status === 1) {
+                        if (ball.x > brick.x && ball.x < brick.x + brickWidth &&
+                            ball.y > brick.y && ball.y < brick.y + brickHeight) {
+                            ball.dy = -ball.dy;
+                            brick.status = 0;
+                            score++;
+                            document.getElementById('score').textContent = score;
+                        }
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            collisionDetection();
+
+            if (gameStarted) {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                    ball.dx = -ball.dx;
+                }
+                if (ball.y - ball.radius < 0) {
+                    ball.dy = -ball.dy;
+                }
+
+                if (ball.y + ball.radius > canvas.height) {
+                    gameStarted = false;
+                    ball.x = canvas.width / 2;
+                    ball.y = canvas.height / 2;
+                    score = 0;
+                    document.getElementById('score').textContent = score;
+                    for (let row = 0; row < brickRows; row++) {
+                        for (let col = 0; col < brickCols; col++) {
+                            bricks[row][col].status = 1;
+                        }
+                    }
+                }
+
+                if (ball.y + ball.radius > paddle.y &&
+                    ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                    ball.dy = -ball.dy;
+                }
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
